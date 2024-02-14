@@ -14,29 +14,32 @@ import java.io.InputStreamReader;
 
 public class DisplayTextActivity extends AppCompatActivity {
 
-    private static final int SCROLL_DURATION = 5000;
 
-    private static final double SCROLL_SPEED = 0.5; //SPEED IN PIXELS PER SECOND
+    private static final double SCROLL_SPEED = 0.1; // Speed in pixels per second
 
     private Handler handler = new Handler();
 
     private ScrollView scrollView;
 
-    private boolean scrollingUp = true;
 
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_text);
 
-
         TextView textView = findViewById(R.id.textView);
         scrollView = findViewById(R.id.scrollView);
 
-        // Load and display the content of the sample.txt file
-        textView.setText(loadTxtFileContent("sample.txt"));
+        // Retrieve the filename passed from MainActivity
+        String fileName = getIntent().getStringExtra("fileName");
+
+        // Load and display the content of the specified text file
+        textView.setText(loadTxtFileContent(fileName));
 
         // Start scrolling the text
         startTextScrolling();
+
     }
 
     private void startTextScrolling(){
@@ -44,7 +47,7 @@ public class DisplayTextActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // Calculate the amount of scroll based on the speed and time elapsed
-                int scrollAmount = (int) (SCROLL_SPEED * 1000 / 60); // 1000 milliseconds in a second, 60 frames per second
+                int scrollAmount = (int) (SCROLL_SPEED * 1000 / 60); // 1000 milliseconds in a second, 40 frames per second
 
                 // Scroll the ScrollView
                 scrollView.scrollBy(0, scrollAmount);
@@ -54,6 +57,8 @@ public class DisplayTextActivity extends AppCompatActivity {
             }
         }, 1000); //Delay for starting scrolling, 1000 milliseconds = 1 second
     }
+
+
 
     private String loadTxtFileContent(String fileName) {
         StringBuilder stringBuilder = new StringBuilder();

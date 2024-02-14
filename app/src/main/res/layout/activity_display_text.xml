@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DisplayTextActivity"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@color/black">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -16,8 +17,9 @@
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="40sp"
-            android:textColor="@android:color/black"
+            android:textSize="35sp"
+            android:textFontWeight="600"
+            android:textColor="@color/white"
             android:padding="8dp"
             android:text="Placeholder text" />
     </ScrollView>

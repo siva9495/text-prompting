@@ -46,9 +46,12 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Retrieve the filename based on the selected position
+                String fileName = txtFileNames.get(position);
+
                 // Start DisplayTextActivity to display the content of the selected .txt file
                 Intent intent = new Intent(MainActivity.this, DisplayTextActivity.class);
-                intent.putExtra("fileName", txtFiles.get(position));
+                intent.putExtra("fileName", fileName);
                 startActivity(intent);
             }
         });

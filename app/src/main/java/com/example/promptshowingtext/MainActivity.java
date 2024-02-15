@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +25,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button btnAddFile = findViewById(R.id.BtnAddFile);
+
+        btnAddFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, FileAddActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // Populate the list of .txt files
         try {
             txtFiles = new ArrayList<>(Arrays.asList(getAssets().list("")));
@@ -42,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, txtFileNames);
         listView.setAdapter(adapter);
 
-        // Set a click listener for the ListView items
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

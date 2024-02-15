@@ -47,7 +47,7 @@ public class DisplayTextActivity extends AppCompatActivity {
             @Override
             public void run() {
                 // Calculate the amount of scroll based on the speed and time elapsed
-                int scrollAmount = (int) (SCROLL_SPEED * 1000 / 60); // 1000 milliseconds in a second, 40 frames per second
+                int scrollAmount = (int) (SCROLL_SPEED * 800 / 60); // 1000 milliseconds in a second, 40 frames per second
 
                 // Scroll the ScrollView
                 scrollView.scrollBy(0, scrollAmount);

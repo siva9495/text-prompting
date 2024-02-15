@@ -13,6 +13,9 @@
         android:theme="@style/Theme.PromptShowingText"
         tools:targetApi="31">
         <activity
+            android:name=".FileAddActivity"
+            android:exported="false" />
+        <activity
             android:name=".DisplayTextActivity"
             android:exported="false" />
         <activity

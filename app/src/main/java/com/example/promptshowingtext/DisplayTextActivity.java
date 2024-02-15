@@ -8,6 +8,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,10 +39,14 @@ public class DisplayTextActivity extends AppCompatActivity {
         // Load and display the content of the specified text file
         textView.setText(loadTxtFileContent(fileName));
 
+        //Load and display the content from files
+        textView.setText(loadTxtFromDirectory(fileName));
+
         // Start scrolling the text
         startTextScrolling();
 
     }
+
 
     private void startTextScrolling(){
         handler.postDelayed(new Runnable() {
@@ -76,4 +82,22 @@ public class DisplayTextActivity extends AppCompatActivity {
         }
         return stringBuilder.toString();
     }
+
+    private String loadTxtFromDirectory(String fileName) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            File file = new File(getFilesDir(), fileName);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
+    }
+
 }

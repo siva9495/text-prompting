@@ -1,15 +1,12 @@
 package com.example.promptshowingtext;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import androidx.appcompat.app.AppCompatActivity;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -44,29 +41,27 @@ public class FileAddActivity extends AppCompatActivity {
             String fileName = title + ".txt";
             String content = description;
 
-
             try {
-                File file = new File(getFilesDir(), fileName);
+                File dir = new File(getExternalFilesDir(null), "my_files");
+                if (!dir.exists()) {
+                    dir.mkdirs(); // Create the directory if it doesn't exist
+                }
+                File file = new File(dir, fileName);
                 FileOutputStream fos = new FileOutputStream(file);
                 fos.write(content.getBytes());
                 fos.close();
                 Toast.makeText(this, "File saved successfully", Toast.LENGTH_SHORT).show();
 
-                //logging the where file was saving
-                String filePath = file.getAbsolutePath();
-                Log.d("FileAddActivity", "File saved at: " +filePath);
-
-                // Notify MainActivity to update the list
-//                Intent intent = new Intent();
-//                intent.setAction("com.example.promptshowingtext.FILE_SAVED");
-//                sendBroadcast(intent);
-
+                // Pass the file name back to MainActivity
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("newFileName", fileName);
+                setResult(RESULT_OK, resultIntent);
                 finish();
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Failed to save file", Toast.LENGTH_SHORT).show();
             }
-        }else{
+        } else {
             Toast.makeText(this, "Please fill in both title and description", Toast.LENGTH_SHORT).show();
         }
     }

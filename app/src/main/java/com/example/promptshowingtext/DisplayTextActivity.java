@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -16,14 +17,9 @@ import java.io.InputStreamReader;
 
 public class DisplayTextActivity extends AppCompatActivity {
 
-
     private static final double SCROLL_SPEED = 0.1; // Speed in pixels per second
-
     private Handler handler = new Handler();
-
     private ScrollView scrollView;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,17 +32,21 @@ public class DisplayTextActivity extends AppCompatActivity {
         // Retrieve the filename passed from MainActivity
         String fileName = getIntent().getStringExtra("fileName");
 
-        // Load and display the content of the specified text file
-        textView.setText(loadTxtFileContent(fileName));
+        // Load and display the content of the specified text file from the internal storage directory
+        String internalStorageText = loadTxtFromDirectory(fileName);
 
-        //Load and display the content from files
-        textView.setText(loadTxtFromDirectory(fileName));
+        // Load and display the content of the specified text file from assets
+        String assetsText = loadTxtFromAssets(fileName);
+
+        // Concatenate the text from both sources
+        String combinedText = internalStorageText + "\n\n" + assetsText;
+
+        // Set the combined text to the TextView
+        textView.setText(combinedText);
 
         // Start scrolling the text
         startTextScrolling();
-
     }
-
 
     private void startTextScrolling(){
         handler.postDelayed(new Runnable() {
@@ -64,9 +64,30 @@ public class DisplayTextActivity extends AppCompatActivity {
         }, 1000); //Delay for starting scrolling, 1000 milliseconds = 1 second
     }
 
+    private String loadTxtFromDirectory(String fileName) {
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            File dir = new File(getExternalFilesDir(null), "my_files");
+            File file = new File(dir, fileName);
+            if (file.exists()) {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line).append("\n");
+                }
+                bufferedReader.close();
+            } else {
+                Log.e("DisplayTextActivity", "File not found in external storage: " + fileName);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("DisplayTextActivity", "Error reading file from external storage: " + e.getMessage());
+        }
+        return stringBuilder.toString();
+    }
 
 
-    private String loadTxtFileContent(String fileName) {
+    private String loadTxtFromAssets(String fileName) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             InputStream is = getAssets().open(fileName);
@@ -82,22 +103,4 @@ public class DisplayTextActivity extends AppCompatActivity {
         }
         return stringBuilder.toString();
     }
-
-    private String loadTxtFromDirectory(String fileName) {
-
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            File file = new File(getFilesDir(), fileName);
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line).append("\n");
-            }
-            bufferedReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return stringBuilder.toString();
-    }
-
 }

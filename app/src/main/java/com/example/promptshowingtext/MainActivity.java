@@ -9,9 +9,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,37 +28,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, FileAddActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
 
         // Initialize list for files
         fileList = new ArrayList<>();
 
-        // Get list of .txt files from assets
-        try {
-            String[] assetFiles = getAssets().list("");
-            if (assetFiles != null) {
-                for (String file : assetFiles) {
-                    if (file.endsWith(".txt")) {
-                        fileList.add(file);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Get list of .txt files from directory
-        File directory = getFilesDir();
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.getName().endsWith(".txt")) {
-                    fileList.add(file.getName());
-                }
-            }
-        }
+        // Populate fileList with existing files
+        populateFileList();
 
         // Display the combined list of .txt files in a ListView
         ListView listView = findViewById(R.id.listView);
@@ -73,14 +49,40 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String fileName = fileList.get(position);
 
-                // Check if the file is from assets or directory
-                if (fileName.endsWith(".txt")) {
-                    // Start DisplayTextActivity to display the content of the selected .txt file
-                    Intent intent = new Intent(MainActivity.this, DisplayTextActivity.class);
-                    intent.putExtra("fileName", fileName);
-                    startActivity(intent);
-                }
+                // Start DisplayTextActivity to display the content of the selected .txt file
+                Intent intent = new Intent(MainActivity.this, DisplayTextActivity.class);
+                intent.putExtra("fileName", fileName);
+                startActivity(intent);
             }
         });
+    }
+
+    // Method to populate fileList with existing files
+    private void populateFileList() {
+        File dir = new File(getExternalFilesDir(null), "my_files");
+        if (dir.exists()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile() && file.getName().endsWith(".txt")) {
+                        fileList.add(file.getName());
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            // Retrieve the new file name from FileAddActivity
+            String newFileName = data.getStringExtra("newFileName");
+            if (newFileName != null) {
+                // Add the new file name to the list and notify the adapter
+                fileList.add(newFileName);
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 }

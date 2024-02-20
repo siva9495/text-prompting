@@ -23,12 +23,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button btnAddFile = findViewById(R.id.BtnAddFile);
+        Button btnQRCodeGenerater = findViewById(R.id.BtnQRCode);
 
         btnAddFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, FileAddActivity.class);
                 startActivityForResult(intent, 1);
+            }
+        });
+
+        btnQRCodeGenerater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, QRCodeGeneraterActivity.class);
+                startActivity(intent);
             }
         });
 
